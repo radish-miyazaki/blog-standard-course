@@ -1,6 +1,8 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { AppLayout } from '../../components/AppLayout';
+import { NextLayoutComponentType } from 'next';
 
-const PostNew = () => {
+const NewPost: NextLayoutComponentType = () => {
   return (
     <div>
       <h1>this is the new post page</h1>
@@ -8,7 +10,11 @@ const PostNew = () => {
   );
 };
 
-export default PostNew;
+NewPost.getLayout = function getLayout(page, pageProps) {
+  return <AppLayout {...pageProps}>{page}</AppLayout>;
+};
+
+export default NewPost;
 
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (context) => {
