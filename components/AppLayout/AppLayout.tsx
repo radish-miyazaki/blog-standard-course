@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useContext, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0/client';
@@ -6,13 +6,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoins, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Logo } from '../Logo';
 import { AppProps } from '../../utils/getAppProps';
+import PostsContext from '../../context/postsContext';
 
 type Props = {
   children: ReactNode;
 } & AppProps;
 
-export const AppLayout = ({ children, availableTokens, posts, postId }: Props) => {
+export const AppLayout = ({ children, availableTokens, posts: postsFromSSR, postId, postCreated }: Props) => {
   const { user } = useUser();
+
+  const { posts, setPostsFromSSR, getPosts, noMorePosts } = useContext(PostsContext);
+  useEffect(() => {
+    setPostsFromSSR(postsFromSSR);
+    if (postId) {
+      const exists = postsFromSSR.find((post) => post._id === postId);
+      if (!exists) {
+        getPosts({ getNewerPosts: true, lastPostDate: postCreated! });
+      }
+    }
+  }, [postsFromSSR, setPostsFromSSR, postCreated, postId, getPosts]);
 
   const handleClick = async () => {
     const result = await fetch('/api/addTokens', {
@@ -49,6 +61,16 @@ export const AppLayout = ({ children, availableTokens, posts, postId }: Props) =
               {post.topic}
             </Link>
           ))}
+          {!noMorePosts && (
+            <div
+              className='hover:underline text-sm text-slate-400 text-center cursor-pointer p-4'
+              onClick={() => {
+                getPosts({ lastPostDate: posts[posts.length - 1].created });
+              }}
+            >
+              もっと読み込む
+            </div>
+          )}
         </div>
         <div className='bg-cyan-800 flex items-center gap-2 border-t border-t-black/50 h-20 px-2'>
           {!!user ? (

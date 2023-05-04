@@ -2,7 +2,7 @@ import { getSession } from '@auth0/nextjs-auth0';
 import clientPromise from '../lib/mongodb';
 import { GetServerSidePropsContext } from 'next/types';
 
-type Post = {
+export type Post = {
   created: string;
   _id: PostId;
   title: string;
@@ -18,6 +18,7 @@ export type AppProps = {
   availableTokens: number;
   posts: Post[];
   postId: PostId | null;
+  postCreated?: string;
 };
 
 export const getAppProps = async (ctx: GetServerSidePropsContext): Promise<AppProps> => {
