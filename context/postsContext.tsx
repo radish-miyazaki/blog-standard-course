@@ -1,14 +1,14 @@
 import { createContext, ReactNode, useCallback, useState } from 'react';
 
-const PostContext = createContext({});
+const PostsContext = createContext({});
 
-export default PostContext;
+export default PostsContext;
 
 type Props = {
   children: ReactNode;
 };
 
-export const PostProvider = ({ children }: Props) => {
+export const PostsProvider = ({ children }: Props) => {
   const [posts, setPosts] = useState([]);
 
   const setPropsFromSSR = useCallback((postsFromSSR = []) => {
