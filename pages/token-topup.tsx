@@ -5,9 +5,12 @@ import { getAppProps } from '../utils/getAppProps';
 
 const TokenTopup: NextLayoutComponentType = () => {
   const handleClick = async () => {
-    await fetch('/api/addTokens', {
+    const result = await fetch('/api/addTokens', {
       method: 'POST',
     });
+
+    const json = await result.json();
+    window.location.href = json.session.url;
   };
 
   return (
