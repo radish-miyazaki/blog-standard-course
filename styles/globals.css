@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+    a:hover {
+        @apply underline;
+    }
+
     h1, h2, h3, h4, h5, h6 {
         @apply font-heading my-6 font-bold;
     }
@@ -36,11 +40,11 @@
     }
 
     ul {
-        list-style-type: disc;
+        list-style: disc inside;
     }
 
-    ul {
-        list-style-type: decimal;
+    ol {
+        list-style: decimal inside;
     }
 
     li {
@@ -50,6 +54,6 @@
 
 @layer components {
     .btn {
-        @apply block bg-green-500 tracking-wider w-full text-center text-white font-bold cursor-pointer uppercase px-4 py-2 rounded-md hover:bg-green-600 transition-colors
+        @apply disabled:bg-green-200 disabled:cursor-not-allowed hover:no-underline block bg-green-500 tracking-wider w-full text-center text-white font-bold cursor-pointer uppercase px-4 py-2 rounded-md hover:bg-green-600 transition-colors
     }
 }
