@@ -62,6 +62,7 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
 
 export default cors(handler as RequestHandler);
 
+// https://github.com/webdeveducation/next-verify-stripe/blob/main/index.js
 const verifyStripe = async (req: NextApiRequest) => {
   async function buffer(readable: ReadableStream) {
     const chunks = [];
