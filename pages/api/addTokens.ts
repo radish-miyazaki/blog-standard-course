@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from '@auth0/nextjs-auth0';
-import clientPromise from '../../lib/mongodb';
 import { Stripe } from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -32,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const checkoutSession = await stripe.checkout.sessions.create({
     line_items: lineItems,
     mode: 'payment',
-    success_url: `${protocol}${host}/success`,
+    success_url: `${protocol}${host}/post/new`,
     payment_intent_data: {
       metadata: {
         sub: user.sub,

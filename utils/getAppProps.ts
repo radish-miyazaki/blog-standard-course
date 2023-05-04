@@ -41,6 +41,7 @@ export const getAppProps = async (ctx: GetServerSidePropsContext): Promise<AppPr
     .find({
       userId: user._id,
     })
+    .limit(5)
     .sort({
       created: -1,
     })

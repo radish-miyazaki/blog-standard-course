@@ -3,11 +3,11 @@ import { AppLayout } from '../../components/AppLayout';
 import { NextLayoutComponentType } from 'next';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getAppProps } from '../../utils/getAppProps';
+import { AppProps, getAppProps } from '../../utils/getAppProps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBrain } from '@fortawesome/free-solid-svg-icons';
 
-const NewPost: NextLayoutComponentType = () => {
+const NewPost: NextLayoutComponentType<AppProps> = ({ availableTokens }) => {
   const router = useRouter();
   const [topic, setTopic] = useState('');
   const [keywords, setKeywords] = useState('');
@@ -31,6 +31,15 @@ const NewPost: NextLayoutComponentType = () => {
     } catch (e) {
       setGenerating(false);
     }
+  };
+
+  const handleClick = async () => {
+    const result = await fetch('/api/addTokens', {
+      method: 'POST',
+    });
+
+    const json = await result.json();
+    window.location.href = json.session.url;
   };
 
   return (
@@ -71,9 +80,18 @@ const NewPost: NextLayoutComponentType = () => {
               </label>
               <small className='block mb-2'>キーワードはカンマ（、）で区切ってください。</small>
             </div>
-            <button className='btn' disabled={!topic.trim() || !keywords.trim()}>
+            <button className='btn' disabled={!availableTokens || !topic.trim() || !keywords.trim()}>
               生成する
             </button>
+            {!availableTokens && (
+              <p className='text-red-500 text-sm'>
+                トークンが不足しています。
+                <span onClick={handleClick} className='text-blue-500 cursor-pointer underline'>
+                  こちら
+                </span>
+                から追加してください。
+              </p>
+            )}
           </form>
         </div>
       )}
@@ -90,14 +108,6 @@ export default NewPost;
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (ctx) => {
     const props = await getAppProps(ctx);
-    if (!props.availableTokens) {
-      return {
-        redirect: {
-          destination: '/token-topup',
-          permanent: false,
-        },
-      };
-    }
 
     return { props };
   },

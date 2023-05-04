@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCoins } from '@fortawesome/free-solid-svg-icons';
+import { faCoins, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Logo } from '../Logo';
 import { AppProps } from '../../utils/getAppProps';
 
@@ -14,6 +14,15 @@ type Props = {
 export const AppLayout = ({ children, availableTokens, posts, postId }: Props) => {
   const { user } = useUser();
 
+  const handleClick = async () => {
+    const result = await fetch('/api/addTokens', {
+      method: 'POST',
+    });
+
+    const json = await result.json();
+    window.location.href = json.session.url;
+  };
+
   return (
     <div className='grid grid-cols-[300px_1fr] h-screen'>
       <div className='flex flex-col text-white overflow-hidden'>
@@ -22,13 +31,14 @@ export const AppLayout = ({ children, availableTokens, posts, postId }: Props) =
           <Link href='/post/new' className='btn'>
             新しい投稿
           </Link>
-          <Link href='/token-topup' className='block mt-2 text-center'>
+          <div className='block mt-2 text-center'>
             <FontAwesomeIcon icon={faCoins} className='text-yellow-500' />
-            <span className='pl-1'>{availableTokens} トークン</span>
-          </Link>
+            <span className='px-1'>{availableTokens} トークン</span>
+            <FontAwesomeIcon icon={faPlus} className='cursor-pointer w-3 h-3' onClick={handleClick} />
+          </div>
         </div>
         <div className='px-4 flex-1 overflow-auto bg-gradient-to-b from-slate-800 to-cyan-800'>
-          {posts.map((post, i) => (
+          {posts.map((post) => (
             <Link
               key={post._id}
               href={`/post/${post._id}`}
